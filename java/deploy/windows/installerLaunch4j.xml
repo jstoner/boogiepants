@@ -1,0 +1,50 @@
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>console</headerType>
+  <jar>lib\boogiepants.jar</jar>
+  <outfile>..\..\build\deploy\windows\boogiepants.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine>-Dbluecove.jsr82.psm_minimum_off=true</cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <customProcName>true</customProcName>
+  <stayAlive>false</stayAlive>
+  <manifest></manifest>
+  <icon></icon>
+  <classPath>
+    <mainClass>boogiepants.util.BoogiepantsBootstrap</mainClass>
+    <cp>java3d.jar</cp>
+    <cp>WiiRemoteJ.jar</cp>
+    <cp>bluecove-2.1.0.jar</cp>
+    <cp>javaosc.jar</cp>
+    <cp>javaosc.jar</cp>
+  </classPath>
+  <jre>
+    <path>jre1.6.0_13</path>
+    <minVersion>1.6.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <opt>-Djava.library.path=lib -Xmx384m</opt>
+  </jre>
+  <versionInfo>
+    <fileVersion>0.1.4.0</fileVersion>
+    <txtFileVersion>0.1.4</txtFileVersion>
+    <fileDescription>boogiepants</fileDescription>
+    <copyright>Copyright (c) 2007-2009 John Stoner</copyright>
+    <productVersion>0.1.4.0</productVersion>
+    <txtProductVersion>0.1.4</txtProductVersion>
+    <productName>boogiepants</productName>
+    <companyName>John Stoner</companyName>
+    <internalName>boogiepants</internalName>
+    <originalFilename>boogiepants.exe</originalFilename>
+  </versionInfo>
+  <messages>
+    <startupErr>An error occurred while starting the application.</startupErr>
+    <bundledJreErr>This application was configured to use a bundled Java Runtime Environment but the runtime is missing or corrupted.</bundledJreErr>
+    <jreVersionErr>This application requires a Java Runtime Environment</jreVersionErr>
+    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.</launcherErr>
+    <instanceAlreadyExistsMsg>An application instance is already running.</instanceAlreadyExistsMsg>
+  </messages>
+</launch4jConfig>

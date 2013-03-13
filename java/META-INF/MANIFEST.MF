@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_13 (Apple Inc.)
+Main-Class: boogiepants.util.BoogiepantsBootstrap
+Class-Path: java3d.jar WiiRemoteJ.jar bluecove-2.1.0.jar javaosc.jar

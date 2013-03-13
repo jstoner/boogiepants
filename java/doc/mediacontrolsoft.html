@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+
+	<head>
+		<title></title>
+	</head>
+	<body>
+	<h1>media control software packages</h1>
+	<p>You can send signals from boogiepants to any software that receives <a href="mediacontrolOSC.html">OSC signals</a>. Theoretically you could control a robot arm that way, or target a bomb, or whatever. But boogiepants is designed for performance with sound.</p>
+	<p>There are a number of software packages you can use with boogiepants:</p>
+	<ul>
+	<li><a href="http://puredata.info/" target="_top">Pure Data</a> is nice. Both powerful and free. We package a PD patch with boogiepants, which illustrates many useful techniques.</li>
+	<li><a href="http://www.cycling74.com/products/max5" target="_top">Max/Msp</a></li>
+	<li><a href="http://supercollider.sourceforge.net//" target="_top">supercollider</a></li>
+	<li><a href="http://opensoundcontrol.org/implementations" target="_top">and many others</a>.</li>
+	</ul>
+	<a name="network">
+	<h2>running the other software elsewhere on the network</h2>
+	<p>You can run boogiepants on a separate machine from the one controlling the media:</p>
+	<ol>
+	<li>make sure the network is set up and connected;</li>
+	<li>determine the IP address of the machine the media control software is running on. The way to do this will depend on the operating system the other machine is running:</li>
+	<ul>
+	<li> If the remote machine is a Mac, go into System Preferences, click on Network, click on the Advanced button, and choose the 'TCP/IP' tab from the top of the window. You probably want to use the IpV4 address. Or for the non-command-line-phobic, enter <code>ifconfig | grep inet</code> in Terminal;</li>
+	<li>If the remote machine is a Windows Vista machine, go into Control Panel, click on Network and Sharing Center. Click on View Status, and then the Details button.  You probably want to use the IPv4 address. Or for the non-command-line-phobic, use the <code>ipconfig</code> command;</li>
+	<li>If the remote machine is running Linux, use the <code>ifconfig</code> command;</li>
+	</ul>
+	<li>Determine  the port it is listening for OSC signals on. That will depend on the software package you are using;</li>
+	<li>on the boogiepants control panel, under 'OSC endpoint,' enter the IP you found;</li>
+	<li>on the boogiepants control panel, under 'OSC port,' enter the port number you found;</li>
+	<li>hit enter.</li>
+	</ol>
+	<p>If the network is operational, boogiepants should send signals across to the other machine. If you do it over wi-fi, it may be erratic.</p> 
+	</body>
+</html>

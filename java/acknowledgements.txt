@@ -1,0 +1,33 @@
+cha0s--thanks for all the WiiremoteJ help, could not have done it without you.
+
+Emmanuel Puybaret, author of Sweet Home 3d and this tip:
+
+http://lists.apple.com/archives/java-dev/2007/Sep/msg00023.html
+
+for the tip and for your time and help, and for the example of SweetHome3D, 
+thanks so much. In the true spirit of open source development, you have 
+given me solutions to a lot of problems. 
+
+Arnar Birgisson, Ronald Oussoren, Ian Johnson, and the gang on the PyObjC list--
+thanks for all the help. Sorry the Python version didn't work out. I still love 
+Python, but Java has more mature apis. At some point I had to choose between
+an exercise in learning Python and delivering something in a timeframe compatible
+with my level of patience.
+
+Shorty, for jumping in and making the first draft of actual pants, thanks a lot.
+
+Mae, for refining and developing the garment, and contributing your bellydancing 
+expertise.
+
+Leonard J. Paul, for his valuable article in Gamasutra:
+
+http://www.gamasutra.com/resource_guide/20030528/paul_01.shtml
+
+Helped me make the Pure Data piece 'Just Work.' Very important.
+
+Hardoff, from the Pure Data forums, for your assistance and patience with my stupid
+questions.
+ 
+If there's anyone else I have missed here, don't be shy about raising your voice--
+I know this has required help from more folks than this, and I want to 
+acknowledge you too. 

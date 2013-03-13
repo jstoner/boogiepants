@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2008-2009, John Stoner
+  All rights reserved.
+ 
+  Redistribution and use in source and binary forms, with or without modification, 
+  are permitted provided that the following conditions are met:
+ 
+  Redistributions of source code must retain the above copyright notice, this list 
+  of conditions and the following disclaimer.
+  Redistributions in binary form must reproduce the above copyright notice, this 
+  list of conditions and the following disclaimer in the documentation and/or 
+  other materials provided with the distribution.
+  Neither the name of the John Stoner nor the names of its contributors may be 
+  used to endorse or promote products derived from this software without specific 
+  prior written permission.
+ 
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+  
+  John Stoner is reachable at johnstoner2 [[at]] gmail [[dot]] com.
+  His current physical address is
+  
+  2358 S Marshall 
+  Chicago, IL 60623 
+-->
+<project name="boogiepants" default="executable.package.apple" basedir=".">
+	<property name="version" value="0.2.0" />
+	<property name="install" value="install"/>
+	
+	<!--test if wii remote jar has been obtained-->
+	<target name="test.wiiremote.jar">
+	      <condition property="not.wiiremotejar.exists">
+	          <not>
+	              <available file="lib/WiiRemoteJ.jar" property="wiiremotejar.exists" />
+	          </not>
+	      </condition>
+	</target>
+
+	<!--grab wii remote jar from remote server-it's closed source, so we can't distribute it
+	directly -->
+	<target name="get.wiiremote.jar" depends="test.wiiremote.jar" if="not.wiiremotejar.exists">
+		<get src="http://www.world-of-cha0s.hostrocket.com/WiiRemoteJ/WiiRemoteJ%20v1.6.zip.gz"
+		     dest="WiiRemoteJ%20v1.6.zip.gz"/>
+		<gunzip src="WiiRemoteJ%20v1.6.zip.gz"/>
+		<unzip src="WiiRemoteJ%20v1.6.zip" dest="."/>
+		<copy file="WiiRemoteJ v1.6/WiiRemoteJ.jar" todir="lib"/>
+	</target>
+	
+	<target name="compile" depends="get.wiiremote.jar">
+		<mkdir dir="build/compile"/>
+		<!--compile classes. Not sure why all the jars had to be extensions.-->
+		<javac sourcepath="" srcdir="src" destdir="build/compile" compiler="javac1.5" 
+			   source="1.5" target="1.5" debug="on" debuglevel="lines,source">
+			<extdirs>
+				<pathelement path="lib/macosx/*" />
+				<pathelement location="lib" />
+			</extdirs>
+			<include name="**/*.java" />
+		</javac>
+		<javac sourcepath="" srcdir="test" destdir="build/compile" compiler="javac1.5" 
+			   source="1.5" target="1.5" debug="on" debuglevel="lines,source">
+			<classpath>
+				<pathelement path="build/compile"/>
+			</classpath>
+			<extdirs>
+				<pathelement path="lib/macosx/*" />
+				<pathelement location="lib" />
+			</extdirs>
+			<include name="**/*.java" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="build/jar"/>
+		<!--create jar for 3d libraries-this is a workaround:
+		apple installs its own versions of these jars in the OS (/System/Library/Java/Extensions).
+		If you want to use your own, this forces you to put your version in 
+		/Library/Java/Extensions, or to use your own classloader. We do the latter
+		(see the ApplicationBootstrap class), and the following packages these jars for
+		that classloader.
+		-->
+		<jar destfile="build/jar/java3d.jar">
+			<fileset dir="lib/macosx">
+				<include name="*.jar" />
+				<include name="*.jnilib" />
+			</fileset>
+			<fileset dir="lib/windows">
+				<include name="*.dll" />
+			</fileset>
+		</jar>
+
+		<!--put jars in place for classpath-->
+		<jar destfile="build/jar/boogiepants.jar" basedir="build/compile" 
+			manifest="META-INF/MANIFEST.MF" />
+		<copy todir="build/jar">
+			<fileset dir="lib">
+				<patternset>
+					<include name="*.jar" />
+					<exclude name="j3d*"/>
+					<exclude name="jogl.jar"/>
+					<exclude name="vecmath.jar"/>
+				</patternset>
+			</fileset>
+		</copy>
+	</target>
+
+	<!--cleanup files created while downloading closed-source jar-->
+	<target name="cleanup.wiiremote.jar">
+		<delete file="WiiRemoteJ%20v1.6.zip"/>
+		<delete file="WiiRemoteJ%20v1.6.zip.gz"/>
+		<delete dir="WiiRemoteJ v1.6"/>
+		<delete file="lib/WiiRemoteJ.jar"/>
+		<delete dir="__MACOSX"/>
+	</target>
+		
+	
+
+	<!--clean files created-->
+	<target name="clean" depends="cleanup.wiiremote.jar">
+		<delete includeEmptyDirs="true" dir="build"/>
+		<delete includeEmptyDirs="true" dir="install"/>
+		<delete includeEmptyDirs="true" dir="bin"/>
+	</target>
+	
+	<!-- junit tests -->
+	<target name="junit" depends="jar">
+		<junit printsummary="withOutAndErr">
+			<classpath>
+			    <fileset dir="build/jar">
+			        <include name="*.jar"/>
+			        <include name="*.jnilib"/>
+			        <include name="*.dll"/>
+                </fileset>
+			</classpath>
+			<formatter type="plain" usefile="false"/>
+			<test name="boogiepants.AllTests"/>
+		</junit>
+	</target>
+	
+	<!--package source for distribution-->
+	<target name="src.dist" depends="compile,clean">
+		<tar destfile="boogiepants-src-${version}.tar">
+			<fileset dir=".">
+				<exclude name="**/*.class" />
+				<exclude name="**/*.jar" />
+				<exclude name="**/*.tar" />
+			</fileset>
+		</tar>
+		<gzip src="boogiepants-src-${version}.tar" destfile="boogiepants-src-${version}.tar.gz"/>
+		<mkdir dir="install"/>
+		<move file="boogiepants-src-${version}.tar.gz" todir="install"/>
+		<delete file="boogiepants-src-${version}.tar"/>
+	</target>
+
+	<!-- Create install/boogiepants-version.dmg package-must run on the Mac -->
+	<target name="executable.package.apple" depends="jar">
+		<mkdir dir="build/deploy/apple"/>
+		
+		<!--copy apple's standard application directory structure into place, along with a couple 
+		other things-->
+		<copy todir="build/deploy/apple/boogiepants-${version}.app">
+		 	<fileset file="deploy/apple/boogiepants.app/**"/>
+		</copy>
+
+		<copy todir="build/deploy/apple/boogiepants">
+		 	<fileset file="deploy/apple/boogiepants/**"/>
+		</copy>
+		
+	    <mkdir dir="build/deploy/apple/boogiepants-${version}.app/Contents/Resources/Java"/>
+		<!--copy jars into place within app directory structure. Note exclusion of wiiremote jar.
+		It gets re-obtained at install time (actually on first run). This is so we don't
+		distribute the jar directly.  Yes, it's a hack.-->
+		<copy todir="build/deploy/apple/boogiepants-${version}.app/Contents/Resources/Java"
+			file="build/jar/javaosc.jar"/>
+		<copy todir="build/deploy/apple/boogiepants-${version}.app/Contents/Resources/Java"
+			file="build/jar/java3d.jar"/>
+		<copy todir="build/deploy/apple/boogiepants-${version}.app/Contents/Resources/Java"
+			file="build/jar/bluecove-2.1.0.jar"/>
+		<!--<copy todir="build/deploy/apple/boogiepants-${version}.app/Contents/Resources/Java"
+			file="build/jar/jnlp.jar"/>-->
+		<copy todir="build/deploy/apple/boogiepants-${version}.app/Contents/Resources/Java"
+			file="build/jar/boogiepants.jar"/>
+		<mkdir dir="build/deploy/apple/boogiepants/pd"/>
+	    <copy todir="build/deploy/apple/boogiepants/pd" >
+	    	<fileset dir="pd"/>
+	    </copy>
+		<mkdir dir="build/deploy/apple/boogiepants/resources"/>
+	    <copy todir="build/deploy/apple/boogiepants/resources" >
+	    	<fileset dir="resources"/>
+	    </copy>
+	    <copy file="LICENSE.txt" todir="build/deploy/apple" />
+	    <copy file="README.txt" todir="build/deploy/apple" />
+		    <copy file="THIRDPARTY-LICENSE-JAVA3D.TXT" todir="build/deploy/apple" />
+	    <copy file="LICENSE-bluecove.txt" todir="build/deploy/apple" />
+	    <copy file="license-javaosc.rtf" todir="build/deploy/apple" />
+	    <copy file="creative-commons-sound.txt" todir="build/deploy/apple" />
+	    <copy file="acknowledgements.txt" todir="build/deploy/apple" />
+
+		<!--copying loses the executable permission, so we restore it:-->
+ 		<chmod perm="+rx" file="build/deploy/apple/boogiepants-${version}.app/Contents/MacOS/JavaApplicationStub"/>
+</target>
+		
+	<!-- creates the distributable executable for apple platform -->
+	<target name="executable.dist.apple" depends="clean, executable.package.apple">
+		<mkdir dir="install"/>
+		<!-- Create install/boogiepants-version.dmg with Disk Utility-must run on the Mac -->
+	    <exec executable="hdiutil">
+		    <arg value="create"/>
+		    <arg value="-srcfolder"/>
+		    <arg value="build/deploy/apple/"/>
+		    <arg value="-format"/>
+		    <arg value="UDZO"/>
+		    <arg value="install/boogiepants-${version}-apple.dmg"/>
+	    </exec>
+	</target>
+	
+
+	  <!-- Builds install/boogiepants-version-windows.exe installer able to install boogiepants.exe 
+	       with a Windows JRE and boogiepants libraries.
+	       CAUTION : May be run only under Windows and requires a Windows JRE, launch4j and Inno Setup 
+	                 installed in their default location -->
+	  <target name="executable.dist.windows" depends="jar">
+	    <!-- Copy boogiepants JARs and Windows Java 3D DLLs and JARs for Java 3D 
+	         to install/lib -->
+	    <mkdir dir="build/deploy/windows/lib"/>
+	    <copy file="build/jar/boogiepants.jar" todir="build/deploy/windows/lib" />
+		<copy todir="build/deploy/windows/lib"
+			file="build/jar/java3d.jar"/>
+		<copy todir="build/deploy/windows/lib"
+			file="lib/javaosc.jar"/>
+		<copy todir="build/deploy/windows/lib"
+			file="lib/bluecove-2.1.0.jar"/>
+		<copy todir="build/deploy/windows/lib">
+			<fileset dir="lib/windows"/>
+		</copy>
+	    <!-- Copy COPYING.TXT and licenses texts to build/deploy/windows/ -->
+	    <copy file="LICENSE.txt" todir="build/deploy/windows" />
+	    <copy file="README.txt" todir="build/deploy/windows" />
+		    <copy file="THIRDPARTY-LICENSE-JAVA3D.TXT" todir="build/deploy/windows" />
+	    <copy file="LICENSE-bluecove.txt" todir="build/deploy/windows" />
+	    <copy file="license-javaosc.rtf" todir="build/deploy/windows" />
+	    <copy file="creative-commons-sound.txt" todir="build/deploy/windows" />
+	    <copy file="acknowledgements.txt" todir="build/deploy/windows" />
+	    <copy file="THIRDPARTY-LICENSE-JAVA.TXT"      todir="build/deploy/windows" />
+	    <copy file="THIRDPARTY-LICENSE-JAVA3D.TXT"    todir="build/deploy/windows" />
+	    <copy file="THIRDPARTY-LICENSE-LAUNCH4J.TXT"  todir="build/deploy/windows" />
+	    <copy file="THIRDPARTY-LICENSE-INNOSETUP.TXT" todir="build/deploy/windows" />
+	  
+		<mkdir dir="build/deploy/windows/pd"/>
+	  	<copy todir="build/deploy/windows/pd">
+	    	<fileset dir="pd"/>
+	    </copy>
+		<mkdir dir="build/deploy/windows/resources"/>
+	    <copy todir="build/deploy/windows/resources" >
+	    	<fileset dir="resources"/>
+	    </copy>
+	  	
+	    <!-- Copy JRE to build/deploy/windows/jre... excluding files mentioned 
+	         in JRE README.TXT file (JRE bin/javaw.exe command excepted) -->
+	    <copy todir="build/deploy/windows/jre1.6.0_13">
+	      <fileset dir="C:\Program Files\Java\jre6">
+	        <include name="*"/>
+	        <include name="bin/**"/>
+	        <include name="lib/**"/>
+
+	        <exclude name="lib/charsets.jar"/>
+	        <exclude name="lib/ext/sunjce_provider.jar"/>
+	        <exclude name="bin/rmid.exe"/>
+	        <exclude name="bin/rmiregistry.exe"/>
+	        <exclude name="bin/tnameserv.exe"/>
+	        <exclude name="bin/keytool.exe"/>
+	        <exclude name="bin/kinit.exe"/>
+	        <exclude name="bin/klist.exe"/>
+	        <exclude name="bin/ktab.exe"/>
+	        <exclude name="bin/policytool.exe"/>
+	        <exclude name="bin/orbd.exe"/>
+	        <exclude name="bin/servertool.exe"/>
+
+	        <exclude name="bin/java.exe"/>
+	        <exclude name="bin/javaws.exe"/>
+	        <exclude name="bin/javacpl.exe"/>
+	        <exclude name="bin/jucheck.exe"/>
+	        <exclude name="bin/jusched.exe"/>
+	        <exclude name="bin/wsdetect.dll"/>
+	        <exclude name="bin/npjava*.dll"/>
+	        <exclude name="bin/npoji610.dll"/>
+	        <exclude name="bin/regutils.dll"/>
+	        <exclude name="bin/axbridge.dll"/>
+	        <exclude name="bin/deploy.dll"/>
+	        <exclude name="bin/jpicom.dll"/>
+	        <exclude name="bin/javacpl.cpl"/>
+	        <exclude name="bin/jpiexp.dll"/>
+	        <exclude name="bin/jpinscp.dll"/>
+	        <exclude name="bin/jpioji.dll"/>
+	        <exclude name="bin/jpishare.dll"/>
+	        <exclude name="lib/deploy.jar"/>
+	        <exclude name="lib/plugin.jar"/>
+	        <exclude name="lib/deploy/messages*.properties"/>
+	        <exclude name="lib/deploy/splash.jpg"/>
+	      </fileset>
+	    </copy>
+
+	  	<mkdir dir="deploy/windows/build/deploy/windows"/>
+	    <!-- Create boogiepants.exe with launch4j -->
+	    <exec executable="C:\Program Files\Launch4j\launch4jc.exe">
+	      <arg value="${basedir}\deploy\windows\installerLaunch4j.xml"/>
+	    </exec>
+
+	    <!-- Create boogiepants-version-windows.exe with Inno Setup --> 
+	    <copy file="deploy/windows/installerInnoSetup.iss" todir="build/deploy/windows" />
+	    <exec executable="C:\Program Files\Inno Setup 5\ISCC.exe">
+	      <arg value="${basedir}\build\deploy\windows\installerInnoSetup.iss"/>
+	    </exec>
+	  	<mkdir dir="install"/>
+	    <move file="build/deploy/boogiepants-0.2.0-windows.exe" todir="install" />
+
+	  </target>
+
+</project>

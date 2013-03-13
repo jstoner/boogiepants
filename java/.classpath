@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6"/>
+	<classpathentry kind="lib" path="/j3d-examples/src/classes"/>
+	<classpathentry kind="lib" path="/j3d-core/src/classes/share"/>
+	<classpathentry kind="lib" path="lib/j3d-org-java3d-all.jar"/>
+	<classpathentry kind="lib" path="lib/j3dcore.jar"/>
+	<classpathentry kind="lib" path="lib/j3dutils.jar"/>
+	<classpathentry kind="lib" path="lib/jogl.jar"/>
+	<classpathentry kind="lib" path="lib/vecmath.jar"/>
+	<classpathentry kind="lib" path="lib/javaosc.jar"/>
+	<classpathentry kind="lib" path="lib/macosx/j3dcore.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="/Users/jstoner/Documents/workspace/boogiepants/lib/WiiRemoteJ.jar"/>
+	<classpathentry kind="lib" path="/Users/jstoner/Documents/workspace/boogiepants/lib/macosx/jnlp.jar"/>
+	<classpathentry kind="lib" path="lib/bluecove-2.1.0.jar"/>
+	<classpathentry kind="lib" path="build/deploy/apple/boogiepants-0.2.0.app/Contents/Resources/Java/boogiepants.jar"/>
+	<classpathentry kind="lib" path="/test/lib/WiiRemoteJ.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

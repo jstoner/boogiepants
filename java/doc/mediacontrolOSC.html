@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+
+	<head>
+		<title></title>
+	</head>
+	<body>
+	<h1>media control/OSC</h1>
+	<p>Boogiepants is not a standalone program. It plays no music by itself.</p>
+	<p>You could think of boogiepants like a synthesizer keyboard. The keys and knobs can be assigned to different samples, which may or may not correspond to different notes. Different instruments in boogiepants can be assigned to different media events in a similar way.</p>
+	<p>Boogiepants talks to other programs using a protocol called Open Sound Control, or OSC. You could think of OSC as a twenty-first century version of MIDI, if that helps. There is a <a href="http://en.wikipedia.org/wiki/Open_Sound_Control">Wikipedia page</a> in addition to the <a href="http://opensoundcontrol.org/">main OSC website</a>, which contains the authoritative <a href="http://opensoundcontrol.org/spec-1_0">OSC specification</a>, if you care about such things.</p>
+	<h2>boogiepants instruments and OSC</h2>
+	<p>All boogiepants instruments require an OSC address, which defines where their signals go when they are played. Different instruments types send different signals. All boogiepants signals are single floating point numbers.</p>
+	<h3>the strike instrument</h3>
+	<p>The strike instrument sends the number 1 to its address when it is played--struck by the stick.</p>
+	<p>This video shows these interactions. Note the changing number in the upper left corner of the right window (the Pure Data window):</p>	
+	<p><object width="560" height="340"><param name="movie" value="http://www.youtube.com/v/HfODNKxqjRA&hl=en&fs=1&"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/HfODNKxqjRA&hl=en&fs=1&" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="560" height="340"></embed></object></p>
+	<h3>the scale instrument</h3>
+	<p>The scale instrument sends signals to three addresses based on the single address you set for the instrument. If you choose, say, <code>/blah</code>, the scale instrument will send signals to these addresses:
+	<ul>
+	<li><code>/blah/scale</code>--the scale instrument sends a stream of numbers between zero and one when the stick intersects the line between the blue and pink spheres. The closer to the blue sphere, the closer to 0 the number will be; the closer to the pink sphere, the the closer to 1 the number will be;</li>
+	<li><code>/blah/intersect</code>--it sends a 1 when the stick begins intersecting, and a 0 when it stops;</li>
+	<li><code>/blah/toggle</code>--it sends a 1 when the dancer presses the button that chooses this instrument's group, and a 0 when the dancer presses a different button.</li>
+	</ul>
+	<p>This video shows these interactions. Note the changing numbers on the left part of the right window (the Pure Data window):</p>
+	<p><object width="560" height="340"><param name="movie" value="http://www.youtube.com/v/vZz7NOb7nJw&hl=en&fs=1&"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/vZz7NOb7nJw&hl=en&fs=1&" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="560" height="340"></embed></object></p>
+	<h3>the pelvic circle instrument</h3>
+	<p>The pelvic circle instrument sends signals to two addresses based on the single address you set for the instrument. If you choose, say, <code>/foo</code>, the pelvic circle instrument will send signals to these addresses:</p>
+	<ul>
+	<li><code>/foo/scale</code>--look at the black mark on the disc. Note how as the stick goes around the cone at the bottom, the black mark rotates with it. To the left is the zero point: as the black mark passes it going back, the signal goes from 1 to 0, and as it goes around the circle, it goes linearly back up to 1;</li>
+	<li><code>/foo/toggle</code>--it sends a 1 when the dancer presses the button that chooses this instrument's group, and a 0 when the dancer presses a different button.</li>
+	</ul>
+	<p>This video shows these interactions. Note the changing numbers on the left part of the right window (the Pure Data window):</p>
+	<p><object width="560" height="340"><param name="movie" value="http://www.youtube.com/v/OEAerOK0bKQ&hl=en&fs=1&"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/OEAerOK0bKQ&hl=en&fs=1&" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="560" height="340"></embed></object></p>
+	<h3>the toggle instrument</h3>
+	<p>The toggle instrument sends a signal to its address: it sends a 1 when the dancer presses the button that chooses this instrument's group, and a 0 when the dancer presses it again.</p>
+	</body>
+</html>
